@@ -88,10 +88,10 @@ def topXSimpleLTVCustomers(top_Customer,dict):
 			""" Logic to find number week's inbetween coustomer first and last visit
 			assume event date is not in sorted order"""
 			total_weeks = 0
-			#min_sv_event_time = datetime.now().date()
+			#min_cs_event_time = datetime.now().date()
 			min_cs_event_time = datetime.strptime("9999-08-02T12:46:46.384Z", '%Y-%m-%dT%H:%M:%S.%fZ').date() #assign a large date in min variable
-			#print min_sv_event_time
-			#max_sv_event_time = datetime.now().date()
+			#print min_cs_event_time
+			#max_cs_event_time = datetime.now().date()
 			max_cs_event_time = datetime.strptime("1000-08-02T12:46:46.384Z", '%Y-%m-%dT%H:%M:%S.%fZ').date() # assign a small date in max variable so that first date can be max
 			
 			
