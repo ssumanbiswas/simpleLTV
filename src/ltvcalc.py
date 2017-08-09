@@ -3,7 +3,7 @@ import json
 from collections import defaultdict
 from schema import customer,siteVisit,image,order
 from datetime import datetime, timedelta
-import simpleltv 
+import simpleltv
 
 #validate the argument list
 if len(sys.argv)!=3:

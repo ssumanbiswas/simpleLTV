@@ -3,6 +3,7 @@ import sys ;
 from collections import defaultdict ;
 from schema import customer,siteVisit,image,order ;
 from datetime import datetime, timedelta ;
+#import datetime;
 
 #Function to ingest the in dictonary 
 def Ingest(data,dict):
@@ -83,21 +84,44 @@ def topXSimpleLTVCustomers(top_Customer,dict):
 			if visit is not None:
 				no_of_visit=len(visit)
 				print no_of_visit
+				
+			""" Logic to find number week's inbetween coustomer first and last visit
+			assume event date is not in sorted order"""
+			total_weeks = 0
+			#min_sv_event_time = datetime.now().date()
+			min_cs_event_time = datetime.strptime("9999-08-02T12:46:46.384Z", '%Y-%m-%dT%H:%M:%S.%fZ').date() #assign a large date in min variable
+			#print min_sv_event_time
+			#max_sv_event_time = datetime.now().date()
+			max_cs_event_time = datetime.strptime("1000-08-02T12:46:46.384Z", '%Y-%m-%dT%H:%M:%S.%fZ').date() # assign a small date in max variable so that first date can be max
 			
-			#Algo to get the total weeks from the coustomers first visit to todays date.
-			curr=dict[c].get('CUSTOMER')[0].event_time
-			curr = datetime.strptime(curr, '%Y-%m-%dT%H:%M:%S.%fZ').date()
-			first_week =curr - timedelta(days=curr.weekday())
-			this_week=datetime.now().date()-timedelta(days=datetime.now().date().weekday())
-			total_weeks=int(abs((first_week-this_week).days))/7 
-			#print total_weeks
-			if total_weeks==0: #check if visit is current week
-				total_weeks=1
+			
+			customer=dict[c].get('CUSTOMER',None)
+			if customer is not None:
+				for cs in customer:
+					cs_event_time = cs.event_time
+					#print cs_event_time
+					cs_event_time = datetime.strptime(cs_event_time, '%Y-%m-%dT%H:%M:%S.%fZ').date()
+			
+			
+					if cs_event_time < min_cs_event_time:
+						min_cs_event_time = cs_event_time
+						print min_cs_event_time
+					if cs_event_time > max_cs_event_time:
+						max_cs_event_time = cs_event_time
+						print max_cs_event_time
+		
+			monday1 = (min_cs_event_time - timedelta(days=min_cs_event_time.weekday()))
+			monday2 = (max_cs_event_time - timedelta(days=max_cs_event_time.weekday()))
+				
+			total_weeks = ( (monday2 - monday1).days / 7 ) + 1
+			print total_weeks
+			#if total_weeks==0:
+			#	total_weeks=1
 	 
 
 			
 			"""A simple LTV can be calculated using the following equation: `52(a) x t`. Where `a` is the average customer value per week 
-			(averagecustomer expenditures per visit (USD) x number of site visits per week) """
+			(average customer expenditures per visit (USD) x number of site visits per week) """
 			if no_of_visit>0:
 				avg_cust_amount=total_amount/no_of_visit
 				#print avg_cust_amount
@@ -112,8 +136,9 @@ def topXSimpleLTVCustomers(top_Customer,dict):
 			
 			cust_ltv[c]=ltv
 	except:
-			print "\n  calculate topXSimpleLTVCustomers: Error in Caculting LTV \n check Division by zero";
-			sys.exit();
+			
+		print "\n  calculate topXSimpleLTVCustomers: Error in Caculting LTV \n check Division by zero";
+		sys.exit();
 			
 	#sorting the dictionary and write the top X customers value in a file
 	result=[]
