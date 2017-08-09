@@ -3,7 +3,7 @@ import sys ;
 from collections import defaultdict ;
 from schema import customer,siteVisit,image,order ;
 from datetime import datetime, timedelta ;
-#import datetime;
+
 
 #Function to ingest the in dictonary 
 def Ingest(data,dict):
